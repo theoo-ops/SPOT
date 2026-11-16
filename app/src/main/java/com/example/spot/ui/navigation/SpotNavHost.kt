@@ -7,17 +7,32 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.produceState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
 import com.example.spot.R
+import com.example.spot.data.model.FoodSpot
+import com.example.spot.di.AppGraph
+import com.example.spot.ui.home.HomeRoute
 import com.example.spot.ui.screens.PlaceholderScreen
+import com.example.spot.ui.screens.SubScreenPlaceholder
+
+/** Routes outside the bottom bar (the bar hides on these). */
+object SpotRoutes {
+    const val Search = "search"
+    const val Details = "details/{id}"
+    fun details(id: String) = "details/$id"
+}
 
 @Composable
 fun SpotNavHost(navController: NavHostController, modifier: Modifier = Modifier) {
-    // Navigation Compose crossfades by default; tabs switch instantly instead.
+    // Navigation Compose crossfades by default; screens switch instantly instead.
     NavHost(
         navController = navController,
         startDestination = SpotDestination.Home.route,
@@ -27,7 +42,19 @@ fun SpotNavHost(navController: NavHostController, modifier: Modifier = Modifier)
         popEnterTransition = { EnterTransition.None },
         popExitTransition = { ExitTransition.None },
     ) {
-        SpotDestination.entries.forEach { destination ->
+        composable(SpotDestination.Home.route) {
+            TabSurface {
+                HomeRoute(
+                    onSearchClick = { navController.navigate(SpotRoutes.Search) { launchSingleTop = true } },
+                    onProfileClick = { navController.navigateToTab(SpotDestination.Profile) },
+                    onViewMapClick = { navController.navigateToTab(SpotDestination.Explore) },
+                    onSeeAllClick = { navController.navigateToTab(SpotDestination.Explore) },
+                    onSpotClick = { id -> navController.navigate(SpotRoutes.details(id)) { launchSingleTop = true } },
+                )
+            }
+        }
+
+        SpotDestination.entries.filter { it != SpotDestination.Home }.forEach { destination ->
             composable(destination.route) {
                 TabSurface {
                     PlaceholderScreen(
@@ -35,6 +62,33 @@ fun SpotNavHost(navController: NavHostController, modifier: Modifier = Modifier)
                         note = stringResource(R.string.placeholder_note),
                     )
                 }
+            }
+        }
+
+        composable(SpotRoutes.Search) {
+            TabSurface {
+                SubScreenPlaceholder(
+                    title = stringResource(R.string.search_title),
+                    note = stringResource(R.string.placeholder_note),
+                    onBack = { navController.popBackStack() },
+                )
+            }
+        }
+
+        composable(
+            route = SpotRoutes.Details,
+            arguments = listOf(navArgument("id") { type = NavType.StringType }),
+        ) { entry ->
+            val id = entry.arguments?.getString("id").orEmpty()
+            val spot by produceState<FoodSpot?>(initialValue = null, id) {
+                value = AppGraph.foodSpotRepository.getSpot(id)
+            }
+            TabSurface {
+                SubScreenPlaceholder(
+                    title = spot?.name.orEmpty(),
+                    note = stringResource(R.string.details_placeholder_note),
+                    onBack = { navController.popBackStack() },
+                )
             }
         }
     }

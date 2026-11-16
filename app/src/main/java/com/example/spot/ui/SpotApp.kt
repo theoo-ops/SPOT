@@ -25,10 +25,13 @@ fun SpotApp() {
 
     Scaffold(
         bottomBar = {
-            SpotBottomBar(
-                currentRoute = currentRoute,
-                onNavigate = navController::navigateToTab,
-            )
+            // Only on the four tabs; Search and Details are full screen.
+            if (currentRoute != null) {
+                SpotBottomBar(
+                    currentRoute = currentRoute,
+                    onNavigate = navController::navigateToTab,
+                )
+            }
         },
     ) { innerPadding ->
         SpotNavHost(navController = navController, modifier = Modifier.padding(innerPadding))

@@ -10,6 +10,7 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -19,6 +20,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
+import com.example.spot.ui.motion.LocalAnimationsEnabled
 import com.example.spot.ui.splash.SplashMotion
 import com.example.spot.ui.splash.SpotSplash
 import kotlinx.coroutines.delay
@@ -34,22 +36,24 @@ fun SpotRoot() {
 
     SystemBarIcons(lightIcons = showSplash, animate = animate)
 
-    Box(Modifier.fillMaxSize()) {
-        SpotApp()
-        AnimatedVisibility(
-            visible = showSplash,
-            enter = EnterTransition.None,
-            exit = if (animate) {
-                fadeOut(tween(SplashMotion.ExitMs, easing = SplashMotion.EaseOut))
-            } else {
-                ExitTransition.None
-            },
-        ) {
-            SpotSplash(
-                animate = animate,
-                dataReady = true,  // later: your startup data state
-                onFinished = { showSplash = false },
-            )
+    CompositionLocalProvider(LocalAnimationsEnabled provides animate) {
+        Box(Modifier.fillMaxSize()) {
+            SpotApp()
+            AnimatedVisibility(
+                visible = showSplash,
+                enter = EnterTransition.None,
+                exit = if (animate) {
+                    fadeOut(tween(SplashMotion.ExitMs, easing = SplashMotion.EaseOut))
+                } else {
+                    ExitTransition.None
+                },
+            ) {
+                SpotSplash(
+                    animate = animate,
+                    dataReady = true,  // later: your startup data state
+                    onFinished = { showSplash = false },
+                )
+            }
         }
     }
 }
