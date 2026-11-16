@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Same as OffWhite in ui/theme/Color.kt -->
+    <color name="spot_background">#FFFFF8F8</color>
+    <!-- Same as Burgundy in ui/theme/Color.kt -->
+    <color name="spot_burgundy">#FF7A1632</color>
+</resources>

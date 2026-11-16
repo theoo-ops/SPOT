@@ -1,0 +1,17 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Compose draws the UI; this only sets the window background so there is no white flash.
+         Light-only on purpose (see SpotTheme), so there is no values-night variant. -->
+    <style name="Theme.SPOT" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="android:windowBackground">@color/spot_background</item>
+    </style>
+
+    <!-- Launch theme = the system splash. Same burgundy as the Compose splash and no icon,
+         so the very first frame is already the splash background and the pin only appears once. -->
+    <style name="Theme.SPOT.Starting" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/spot_burgundy</item>
+        <item name="windowSplashScreenAnimatedIcon">@android:color/transparent</item>
+        <item name="postSplashScreenTheme">@style/Theme.SPOT</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:windowLightNavigationBar" tools:targetApi="27">false</item>
+    </style>
+</resources>

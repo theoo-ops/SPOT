@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">SPOT</string>
+    <string name="tab_home">Home</string>
+    <string name="tab_explore">Explore</string>
+    <string name="tab_saved">Saved</string>
+    <string name="tab_profile">Profile</string>
+    <string name="splash_tagline">Searching Places,\nOptions, and Tastes</string>
+    <string name="splash_content_description">SPOT. Searching Places, Options, and Tastes</string>
+    <string name="placeholder_note">This screen is a placeholder. The real design comes in a later step.</string>
+</resources>
