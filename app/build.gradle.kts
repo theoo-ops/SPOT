@@ -2,6 +2,13 @@ plugins {
     alias(libs.plugins.android.application)
     // AGP 9 compiles Kotlin itself; only the Compose compiler plugin is added.
     alias(libs.plugins.kotlin.compose)
+    // Reads MAPS_API_KEY from local.properties (not committed) and injects it into the manifest.
+    alias(libs.plugins.secrets)
+}
+
+secrets {
+    // Committed fallback so the project still builds without a key (the map is blank then).
+    defaultPropertiesFileName = "local.defaults.properties"
 }
 
 android {
@@ -53,6 +60,9 @@ dependencies {
     implementation(libs.androidx.compose.material3)
     implementation(libs.androidx.compose.material.icons.core)
     implementation(libs.androidx.navigation.compose)
+    implementation(libs.maps.compose)
+    implementation(libs.play.services.maps)
+    implementation(libs.play.services.location)
 
     debugImplementation(libs.androidx.compose.ui.tooling)
 

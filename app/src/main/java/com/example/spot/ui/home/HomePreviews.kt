@@ -8,13 +8,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.spot.data.fake.SeedFoodSpots
 import com.example.spot.location.Distance
-import com.example.spot.location.FakeUserLocationProvider
+import com.example.spot.location.SpotGeo
 import com.example.spot.ui.theme.SpotTheme
 
 // Fixtures enter through HomeUiState, the same boundary the ViewModel uses.
 
 private val DemoSpots: List<SpotItem> = SeedFoodSpots
-    .map { it to Distance.meters(FakeUserLocationProvider.DefaultPoint, it.location) }
+    .map { it to Distance.meters(SpotGeo.ReferencePoint, it.location) }
     .sortedBy { it.second }
     .map { (spot, m) -> spot.toItem(Distance.format(m)) }
 
@@ -26,7 +26,7 @@ private val WorstSpots = listOf(
     SpotItem("w3", "Samgyupsal & Korean BBQ Unlimited — Alangilan", "Korean BBQ & Samgyupsal",
         3.0, Distance.format(12_449.0), null),
     SpotItem("w4", "Kape ☕ at Pandesal ni Mang Totoy", "Bakery", 4.25, Distance.format(1_050.0), null),
-    SpotItem("w5", "Bánh Mì & Phở Corner", "Vietnamese", 0.0, Distance.format(250_000.0), null),
+    SpotItem("w5", "Bánh Mì & Phở Corner", "Vietnamese", null, Distance.format(250_000.0), null), // no ratings yet
 )
 
 private val HundredSpots = List(100) { i ->
@@ -74,3 +74,9 @@ private fun HomeLoadingPreview() = PreviewHome(HomeUiState(isLoading = true))
 @Preview(name = "8 Small phone 320dp", widthDp = 320, heightDp = 640)
 @Composable
 private fun HomeSmallPreview() = PreviewHome(HomeUiState(isLoading = false, spots = WorstSpots))
+
+@Preview(name = "9 No location (distances hidden)", widthDp = 360, heightDp = 800)
+@Composable
+private fun HomeNoLocationPreview() = PreviewHome(
+    HomeUiState(isLoading = false, spots = DemoSpots.map { it.copy(distanceLabel = null) }),
+)

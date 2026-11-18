@@ -1,8 +1,8 @@
 package com.example.spot.location
 
 import com.example.spot.data.model.GeoPoint
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import java.util.Locale
 import kotlin.math.asin
 import kotlin.math.cos
@@ -10,20 +10,55 @@ import kotlin.math.roundToInt
 import kotlin.math.sin
 import kotlin.math.sqrt
 
-interface UserLocationProvider {
-    /** The user's location. A real provider emits again as it changes. */
-    fun observeLocation(): Flow<GeoPoint>
+sealed interface LocationState {
+    /** Permission granted, waiting for the first fix. */
+    data object Loading : LocationState
+
+    /**
+     * @param isPrecise false when the user granted only approximate location. Approximate fixes
+     * can be off by a kilometre or more, so distances are hidden then.
+     */
+    data class Available(
+        val latitude: Double,
+        val longitude: Double,
+        val accuracyMeters: Float,
+        val isPrecise: Boolean,
+    ) : LocationState {
+        val point: GeoPoint get() = GeoPoint(latitude, longitude)
+    }
+
+    /** No location permission (never asked, denied, or "don't ask again"). */
+    data object PermissionDenied : LocationState
+
+    /** Permission granted but the phone's location services are off. */
+    data object Unavailable : LocationState
 }
 
-class FakeUserLocationProvider(
-    private val point: GeoPoint = DefaultPoint,
-) : UserLocationProvider {
-    override fun observeLocation(): Flow<GeoPoint> = flowOf(point)
+/** Only an Available, precise fix is trustworthy enough for "200 m away". */
+val LocationState.distanceOrigin: GeoPoint?
+    get() = (this as? LocationState.Available)?.takeIf { it.isPrecise }?.point
 
-    companion object {
-        /** PLACEHOLDER near BatStateU Alangilan, Batangas City. Replace with your real point. */
-        val DefaultPoint = GeoPoint(latitude = 13.7840, longitude = 121.0740)
-    }
+interface UserLocationProvider {
+    val state: StateFlow<LocationState>
+
+    /** Re-check permission and location services (after a permission result or returning from Settings). */
+    fun refresh()
+}
+
+/** Fixed location for previews and tests. */
+class FakeUserLocationProvider(
+    initial: LocationState = LocationState.Available(
+        SpotGeo.ReferencePoint.latitude, SpotGeo.ReferencePoint.longitude,
+        accuracyMeters = 15f, isPrecise = true,
+    ),
+) : UserLocationProvider {
+    override val state = MutableStateFlow(initial)
+    override fun refresh() = Unit
+}
+
+object SpotGeo {
+    /** PLACEHOLDER for Golden Country Homes, near BatStateU Alangilan. Replace with the real point. */
+    val ReferencePoint = GeoPoint(latitude = 13.7840, longitude = 121.0740)
 }
 
 /** The one place distances are computed and formatted. */
@@ -54,5 +89,8 @@ object Distance {
         }
     }
 
-    private const val Nbsp = '\u00A0'
+    /** Distance label from [origin], or null when there is no trustworthy origin. */
+    fun labelOrNull(origin: GeoPoint?, to: GeoPoint): String? = origin?.let { format(meters(it, to)) }
+
+    private const val Nbsp = ' '
 }

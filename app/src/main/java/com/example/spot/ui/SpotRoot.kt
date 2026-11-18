@@ -20,6 +20,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
+import androidx.lifecycle.compose.LifecycleResumeEffect
+import com.example.spot.di.AppGraph
 import com.example.spot.ui.motion.LocalAnimationsEnabled
 import com.example.spot.ui.splash.SplashMotion
 import com.example.spot.ui.splash.SpotSplash
@@ -35,6 +37,12 @@ fun SpotRoot() {
     var showSplash by rememberSaveable { mutableStateOf(true) }  // rotation doesn't replay it
 
     SystemBarIcons(lightIcons = showSplash, animate = animate)
+
+    // Coming back from Settings (permission or location toggled): re-check location for every screen.
+    LifecycleResumeEffect(Unit) {
+        AppGraph.userLocationProvider.refresh()
+        onPauseOrDispose { }
+    }
 
     CompositionLocalProvider(LocalAnimationsEnabled provides animate) {
         Box(Modifier.fillMaxSize()) {

@@ -17,6 +17,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.spot.R
+import com.example.spot.ui.components.CategoryChips
 
 private val Gutter = 20.dp
 

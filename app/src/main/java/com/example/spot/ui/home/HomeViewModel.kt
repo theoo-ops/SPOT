@@ -12,6 +12,7 @@ import com.example.spot.data.model.FoodSpot
 import com.example.spot.di.AppGraph
 import com.example.spot.location.Distance
 import com.example.spot.location.UserLocationProvider
+import com.example.spot.location.distanceOrigin
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -36,8 +37,9 @@ data class SpotItem(
     val id: String,
     val name: String,
     val category: String,
-    val rating: Double,
-    val distanceLabel: String,
+    val rating: Double?,
+    /** Null when there is no trustworthy location: the card shows the category only. */
+    val distanceLabel: String?,
     @param:DrawableRes val photo: Int?,
 )
 
@@ -48,7 +50,7 @@ data class HomeUiState(
     val categories: List<String> = FoodCategories.all,
     /** null = "All". */
     val selectedCategory: String? = null,
-    /** Already filtered by [selectedCategory] and sorted nearest first. */
+    /** Filtered by [selectedCategory]; nearest first when distances are known, else repository order. */
     val spots: List<SpotItem> = emptyList(),
 )
 
@@ -62,18 +64,23 @@ class HomeViewModel(
 
     val uiState: StateFlow<HomeUiState> = combine(
         repository.observeSpots(),
-        locationProvider.observeLocation(),
+        locationProvider.state,
         selectedCategory,
-    ) { spots, here, selected ->
+    ) { spots, location, selected ->
+        val origin = location.distanceOrigin // null unless precise + available: hide distances
+        val filtered = spots.filter { selected == null || it.category == selected }
         HomeUiState(
             isLoading = false,
             greeting = Greeting.at(clock()),
             selectedCategory = selected,
-            spots = spots
-                .filter { selected == null || it.category == selected }
-                .map { it to Distance.meters(here, it.location) }
-                .sortedBy { (_, meters) -> meters }
-                .map { (spot, meters) -> spot.toItem(Distance.format(meters)) },
+            spots = if (origin == null) {
+                filtered.map { it.toItem(distanceLabel = null) }
+            } else {
+                filtered
+                    .map { it to Distance.meters(origin, it.location) }
+                    .sortedBy { (_, meters) -> meters }
+                    .map { (spot, meters) -> spot.toItem(Distance.format(meters)) }
+            },
         )
     }.stateIn(
         scope = viewModelScope,
@@ -93,7 +100,7 @@ class HomeViewModel(
     }
 }
 
-internal fun FoodSpot.toItem(distanceLabel: String) = SpotItem(
+internal fun FoodSpot.toItem(distanceLabel: String?) = SpotItem(
     id = id, name = name, category = category, rating = rating,
     distanceLabel = distanceLabel, photo = photo,
 )

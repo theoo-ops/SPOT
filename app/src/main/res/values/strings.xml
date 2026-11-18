@@ -31,8 +31,29 @@
     <string name="search_title">Search</string>
     <string name="details_placeholder_note">Spot details come in a later step.</string>
 
+    <!-- Explore Map -->
+    <string name="explore_title">Explore Map</string>
+    <string name="explore_map_description">Map of nearby food spots</string>
+    <string name="explore_callout_open">open details</string>
+    <string name="explore_banner_denied">Location is off for SPOT. Turn it on to see spots near you.</string>
+    <string name="explore_banner_turn_on_location">Turn on location</string>
+    <string name="explore_banner_open_settings">Open settings</string>
+    <string name="explore_banner_services_off">Your phone’s location is off.</string>
+    <string name="explore_banner_turn_on">Turn on</string>
+    <string name="explore_banner_approximate">Using approximate location, so distances are hidden.</string>
+    <string name="explore_banner_use_precise">Use precise</string>
+    <string name="explore_banner_offline">You’re offline. The map may not load.</string>
+    <string name="explore_empty_title">No %1$s spots on the map yet</string>
+    <string name="explore_empty_body">Try another category, or show every spot.</string>
+    <string name="rating_new">New</string>
+
     <!-- Content descriptions -->
     <string name="cd_profile">Profile</string>
     <string name="cd_rating">Rating</string>
     <string name="cd_back">Back</string>
+    <string name="cd_filters">Filters</string>
+    <string name="cd_dismiss">Dismiss</string>
+    <string name="cd_locate">Center on my location</string>
+    <string name="cd_locating">Finding your location</string>
+    <string name="cd_your_location">Your location</string>
 </resources>

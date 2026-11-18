@@ -8,7 +8,8 @@ data class FoodSpot(
     val id: String,
     val name: String,
     val category: String,
-    val rating: Double,
+    /** Average rating, or null when nobody has rated the spot yet. */
+    val rating: Double?,
     val latitude: Double,
     val longitude: Double,
     val address: String,

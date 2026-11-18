@@ -19,6 +19,7 @@ import androidx.navigation.navArgument
 import com.example.spot.R
 import com.example.spot.data.model.FoodSpot
 import com.example.spot.di.AppGraph
+import com.example.spot.ui.explore.ExploreMapRoute
 import com.example.spot.ui.home.HomeRoute
 import com.example.spot.ui.screens.PlaceholderScreen
 import com.example.spot.ui.screens.SubScreenPlaceholder
@@ -26,6 +27,7 @@ import com.example.spot.ui.screens.SubScreenPlaceholder
 /** Routes outside the bottom bar (the bar hides on these). */
 object SpotRoutes {
     const val Search = "search"
+    const val ExploreMap = "explore-map"
     const val Details = "details/{id}"
     fun details(id: String) = "details/$id"
 }
@@ -47,7 +49,7 @@ fun SpotNavHost(navController: NavHostController, modifier: Modifier = Modifier)
                 HomeRoute(
                     onSearchClick = { navController.navigate(SpotRoutes.Search) { launchSingleTop = true } },
                     onProfileClick = { navController.navigateToTab(SpotDestination.Profile) },
-                    onViewMapClick = { navController.navigateToTab(SpotDestination.Explore) },
+                    onViewMapClick = { navController.navigate(SpotRoutes.ExploreMap) { launchSingleTop = true } },
                     onSeeAllClick = { navController.navigateToTab(SpotDestination.Explore) },
                     onSpotClick = { id -> navController.navigate(SpotRoutes.details(id)) { launchSingleTop = true } },
                 )
@@ -62,6 +64,15 @@ fun SpotNavHost(navController: NavHostController, modifier: Modifier = Modifier)
                         note = stringResource(R.string.placeholder_note),
                     )
                 }
+            }
+        }
+
+        composable(SpotRoutes.ExploreMap) {
+            TabSurface {
+                ExploreMapRoute(
+                    onBack = { navController.popBackStack() },
+                    onOpenDetails = { id -> navController.navigate(SpotRoutes.details(id)) { launchSingleTop = true } },
+                )
             }
         }
 
