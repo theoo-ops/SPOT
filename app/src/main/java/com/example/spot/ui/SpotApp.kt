@@ -1,5 +1,6 @@
 package com.example.spot.ui
 
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -25,7 +26,7 @@ fun SpotApp() {
 
     Scaffold(
         bottomBar = {
-            // Only on the four tabs; Search and Details are full screen.
+            // Only on the four tabs; Explore Map and Details are full screen.
             if (currentRoute != null) {
                 SpotBottomBar(
                     currentRoute = currentRoute,
@@ -34,7 +35,9 @@ fun SpotApp() {
             }
         },
     ) { innerPadding ->
-        SpotNavHost(navController = navController, modifier = Modifier.padding(innerPadding))
+        // consumeWindowInsets: screens that add imePadding() (Search) subtract the bottom bar they
+        // already clear, so only their content moves up and the bar stays behind the keyboard.
+        SpotNavHost(navController = navController, modifier = Modifier.padding(innerPadding).consumeWindowInsets(innerPadding))
     }
 }
 

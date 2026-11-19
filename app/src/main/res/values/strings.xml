@@ -27,8 +27,19 @@
     <string name="home_empty_title_all">No food spots nearby yet</string>
     <string name="home_empty_body_all">Check back soon. New spots are on the way.</string>
 
+    <!-- Search (Explore tab) -->
+    <string name="search_field_placeholder">Search restaurants…</string>
+    <string name="search_field_label">Search restaurants</string>
+    <string name="search_empty_title">No spots match “%1$s”</string>
+    <string name="search_empty_body">Check the spelling, or try a shorter word.</string>
+    <string name="search_empty_action">Clear search</string>
+    <string name="search_no_results">No results</string>
+    <plurals name="search_results_count">
+        <item quantity="one">%d result</item>
+        <item quantity="other">%d results</item>
+    </plurals>
+
     <!-- Sub-screens -->
-    <string name="search_title">Search</string>
     <string name="details_placeholder_note">Spot details come in a later step.</string>
 
     <!-- Explore Map -->
@@ -51,6 +62,7 @@
     <string name="cd_profile">Profile</string>
     <string name="cd_rating">Rating</string>
     <string name="cd_back">Back</string>
+    <string name="cd_clear_search">Clear search</string>
     <string name="cd_filters">Filters</string>
     <string name="cd_dismiss">Dismiss</string>
     <string name="cd_locate">Center on my location</string>

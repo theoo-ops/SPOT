@@ -11,6 +11,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.produceState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -21,15 +22,18 @@ import com.example.spot.data.model.FoodSpot
 import com.example.spot.di.AppGraph
 import com.example.spot.ui.explore.ExploreMapRoute
 import com.example.spot.ui.home.HomeRoute
+import com.example.spot.ui.search.SearchRoute
 import com.example.spot.ui.screens.PlaceholderScreen
 import com.example.spot.ui.screens.SubScreenPlaceholder
 
 /** Routes outside the bottom bar (the bar hides on these). */
 object SpotRoutes {
-    const val Search = "search"
     const val ExploreMap = "explore-map"
     const val Details = "details/{id}"
     fun details(id: String) = "details/$id"
+
+    /** Set on the Explore entry by Home's search field: focus the search field and open the keyboard. */
+    const val FocusSearchKey = "focusSearchField"
 }
 
 @Composable
@@ -47,7 +51,10 @@ fun SpotNavHost(navController: NavHostController, modifier: Modifier = Modifier)
         composable(SpotDestination.Home.route) {
             TabSurface {
                 HomeRoute(
-                    onSearchClick = { navController.navigate(SpotRoutes.Search) { launchSingleTop = true } },
+                    onSearchClick = {
+                        navController.navigateToTab(SpotDestination.Explore)
+                        navController.currentBackStackEntry?.savedStateHandle?.set(SpotRoutes.FocusSearchKey, true)
+                    },
                     onProfileClick = { navController.navigateToTab(SpotDestination.Profile) },
                     onViewMapClick = { navController.navigate(SpotRoutes.ExploreMap) { launchSingleTop = true } },
                     onSeeAllClick = { navController.navigateToTab(SpotDestination.Explore) },
@@ -56,7 +63,21 @@ fun SpotNavHost(navController: NavHostController, modifier: Modifier = Modifier)
             }
         }
 
-        SpotDestination.entries.filter { it != SpotDestination.Home }.forEach { destination ->
+        // The Explore tab is the Search screen.
+        composable(SpotDestination.Explore.route) { entry ->
+            val focusRequested by entry.savedStateHandle.getStateFlow(SpotRoutes.FocusSearchKey, false)
+                .collectAsStateWithLifecycle()
+            TabSurface {
+                SearchRoute(
+                    focusRequested = focusRequested,
+                    onFocusRequestHandled = { entry.savedStateHandle[SpotRoutes.FocusSearchKey] = false },
+                    onBack = { navController.navigateToTab(SpotDestination.Home) }, // saves the query for next time
+                    onOpenDetails = { id -> navController.navigate(SpotRoutes.details(id)) { launchSingleTop = true } },
+                )
+            }
+        }
+
+        SpotDestination.entries.filter { it != SpotDestination.Home && it != SpotDestination.Explore }.forEach { destination ->
             composable(destination.route) {
                 TabSurface {
                     PlaceholderScreen(
@@ -72,16 +93,6 @@ fun SpotNavHost(navController: NavHostController, modifier: Modifier = Modifier)
                 ExploreMapRoute(
                     onBack = { navController.popBackStack() },
                     onOpenDetails = { id -> navController.navigate(SpotRoutes.details(id)) { launchSingleTop = true } },
-                )
-            }
-        }
-
-        composable(SpotRoutes.Search) {
-            TabSurface {
-                SubScreenPlaceholder(
-                    title = stringResource(R.string.search_title),
-                    note = stringResource(R.string.placeholder_note),
-                    onBack = { navController.popBackStack() },
                 )
             }
         }

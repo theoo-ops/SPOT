@@ -1,6 +1,7 @@
 package com.example.spot.data.fake
 
 import com.example.spot.data.FoodSpotRepository
+import com.example.spot.data.SearchMatching
 import com.example.spot.data.model.FoodSpot
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
@@ -21,6 +22,11 @@ class FakeFoodSpotRepository(
     }
 
     override suspend fun getSpot(id: String): FoodSpot? = spots.firstOrNull { it.id == id }
+
+    override suspend fun search(query: String, category: String?): List<FoodSpot> {
+        if (latencyMs > 0) delay(latencyMs)
+        return spots.filter { (category == null || it.category == category) && SearchMatching.matches(it, query) }
+    }
 }
 
 /**

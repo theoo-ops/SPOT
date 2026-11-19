@@ -2,7 +2,9 @@ package com.example.spot.di
 
 import android.content.Context
 import com.example.spot.data.FoodSpotRepository
+import com.example.spot.data.fake.DebugData
 import com.example.spot.data.fake.FakeFoodSpotRepository
+import com.example.spot.data.fake.SeedFoodSpots
 import com.example.spot.location.FusedUserLocationProvider
 import com.example.spot.location.UserLocationProvider
 import kotlinx.coroutines.CoroutineScope
@@ -20,6 +22,8 @@ object AppGraph {
         appContext = context.applicationContext
     }
 
-    val foodSpotRepository: FoodSpotRepository by lazy { FakeFoodSpotRepository() }
+    val foodSpotRepository: FoodSpotRepository by lazy {
+        FakeFoodSpotRepository(spots = DebugData.spotsOr(SeedFoodSpots)) // DebugData.Enabled = worst-case data
+    }
     val userLocationProvider: UserLocationProvider by lazy { FusedUserLocationProvider(appContext, appScope) }
 }
