@@ -79,13 +79,16 @@ object Distance {
      * "200 m away" under 1 km (nearest 10 m, never "0 m"), "1.2 km away" from 1 km, "120 km away" from 100 km.
      * Non-breaking spaces keep the label on one line when it wraps (no orphaned "away").
      */
-    fun format(meters: Double): String {
+    fun format(meters: Double): String = "${formatShort(meters)}${Nbsp}away"
+
+    /** The same distance without "away" ("200 m", "1.2 km"), for the Details meta row. */
+    fun formatShort(meters: Double): String {
         val roundedMeters = ((meters / 10).roundToInt() * 10).coerceAtLeast(10)
         val km = meters / 1000
         return when {
-            roundedMeters < 1000 -> "$roundedMeters${Nbsp}m${Nbsp}away"
-            km < 100 -> String.format(Locale.US, "%.1f${Nbsp}km${Nbsp}away", km)
-            else -> "${km.roundToInt()}${Nbsp}km${Nbsp}away"
+            roundedMeters < 1000 -> "$roundedMeters${Nbsp}m"
+            km < 100 -> String.format(Locale.US, "%.1f${Nbsp}km", km)
+            else -> "${km.roundToInt()}${Nbsp}km"
         }
     }
 

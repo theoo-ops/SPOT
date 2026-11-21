@@ -71,7 +71,11 @@ fun SpotRoot() {
 private fun SystemBarIcons(lightIcons: Boolean, animate: Boolean) {
     val activity = LocalActivity.current ?: return
     val view = LocalView.current
+    // A restored activity (rotation, process death) shows no splash: MainActivity already chose dark
+    // icons, and the visible screen may have changed them since (Details over a photo). Leave them.
+    val startedWithSplash = remember { lightIcons }
     LaunchedEffect(lightIcons) {
+        if (!startedWithSplash) return@LaunchedEffect
         if (!lightIcons && animate) delay(SplashMotion.BarIconsSwitchDelayMs.toLong())
         WindowCompat.getInsetsController(activity.window, view).apply {
             isAppearanceLightStatusBars = !lightIcons

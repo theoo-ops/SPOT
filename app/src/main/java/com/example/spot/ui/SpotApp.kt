@@ -1,5 +1,6 @@
 package com.example.spot.ui
 
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
@@ -13,6 +14,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.spot.ui.navigation.SpotBottomBar
 import com.example.spot.ui.navigation.SpotDestination
 import com.example.spot.ui.navigation.SpotNavHost
+import com.example.spot.ui.navigation.SpotRoutes
 import com.example.spot.ui.navigation.navigateToTab
 import com.example.spot.ui.theme.SpotTheme
 
@@ -37,7 +39,9 @@ fun SpotApp() {
     ) { innerPadding ->
         // consumeWindowInsets: screens that add imePadding() (Search) subtract the bottom bar they
         // already clear, so only their content moves up and the bar stays behind the keyboard.
-        SpotNavHost(navController = navController, modifier = Modifier.padding(innerPadding).consumeWindowInsets(innerPadding))
+        // Details is edge to edge (photo behind the status bar) and handles its own insets.
+        val padding = if (backStackEntry?.destination?.route == SpotRoutes.Details) PaddingValues() else innerPadding
+        SpotNavHost(navController = navController, modifier = Modifier.padding(padding).consumeWindowInsets(padding))
     }
 }
 

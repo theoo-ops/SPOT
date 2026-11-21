@@ -112,8 +112,28 @@
     <string name="help_expanded">Expanded</string>
     <string name="help_collapsed">Collapsed</string>
 
-    <!-- Sub-screens -->
-    <string name="details_placeholder_note">Spot details come in a later step.</string>
+    <!-- Details -->
+    <string name="details_hours">Operating Hours</string>
+    <string name="details_location">Location</string>
+    <plurals name="details_reviews">
+        <item quantity="one">(%d review)</item>
+        <item quantity="other">(%d reviews)</item>
+    </plurals>
+    <plurals name="details_reviews_spoken">
+        <item quantity="one">%d review</item>
+        <item quantity="other">%d reviews</item>
+    </plurals>
+    <string name="details_cd_rating">Rated %1$s out of 5</string>
+    <string name="details_cd_unrated">New, no ratings yet</string>
+    <string name="details_directions">Get Directions</string>
+    <string name="details_view_photos">View Photos</string>
+    <string name="details_no_maps_app">No maps app found.</string>
+    <string name="details_cd_photo">Photo of %1$s</string>
+    <string name="details_close_photo">Close photo</string>
+    <string name="details_loading">Loading spot details</string>
+    <string name="details_not_found_title">This spot isn’t available</string>
+    <string name="details_not_found_body">It may have been removed, or the link is out of date.</string>
+    <string name="details_go_back">Go back</string>
 
     <!-- Explore Map -->
     <string name="explore_title">Explore Map</string>
