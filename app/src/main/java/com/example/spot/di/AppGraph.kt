@@ -5,6 +5,10 @@ import com.example.spot.data.FoodSpotRepository
 import com.example.spot.data.fake.DebugData
 import com.example.spot.data.fake.FakeFoodSpotRepository
 import com.example.spot.data.fake.SeedFoodSpots
+import com.example.spot.data.profile.DataStoreProfileRepository
+import com.example.spot.data.profile.InMemoryProfileRepository
+import com.example.spot.data.profile.ProfileRepository
+import com.example.spot.data.profile.profileDataStore
 import com.example.spot.data.saved.DataStoreSavedSpotsRepository
 import com.example.spot.data.saved.InMemorySavedSpotsRepository
 import com.example.spot.data.saved.SavedSpotsRepository
@@ -30,6 +34,10 @@ object AppGraph {
         FakeFoodSpotRepository(spots = DebugData.spotsOr(SeedFoodSpots)) // DebugData.Enabled = worst-case data
     }
     val userLocationProvider: UserLocationProvider by lazy { FusedUserLocationProvider(appContext, appScope) }
+    val profileRepository: ProfileRepository by lazy {
+        if (DebugData.Enabled) InMemoryProfileRepository(DebugData.ProfileName)
+        else DataStoreProfileRepository(appContext.profileDataStore)
+    }
     val savedSpotsRepository: SavedSpotsRepository by lazy {
         if (DebugData.Enabled) InMemorySavedSpotsRepository(DebugData.savedEntries())
         else DataStoreSavedSpotsRepository(appContext.savedSpotsDataStore)

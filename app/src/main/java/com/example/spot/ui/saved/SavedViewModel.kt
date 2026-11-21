@@ -8,6 +8,7 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.spot.data.FoodSpotRepository
 import com.example.spot.data.saved.SavedSpotsRepository
+import com.example.spot.data.saved.existingSavedSpots
 import com.example.spot.di.AppGraph
 import com.example.spot.location.Distance
 import com.example.spot.location.UserLocationProvider
@@ -43,16 +44,13 @@ class SavedViewModel(
 ) : ViewModel() {
 
     val uiState: StateFlow<SavedUiState> = combine(
-        savedSpots.saved,
-        foodSpots.observeSpots(),
+        savedSpots.existingSavedSpots(foodSpots), // skips saved IDs that no longer exist; same flow as Profile's count
         locationProvider.state,
-    ) { entries, spots, location ->
-        val byId = spots.associateBy { it.id }
+    ) { saved, location ->
         val origin = location.distanceOrigin
         SavedUiState(
             isLoading = false,
-            items = entries.mapNotNull { entry ->
-                val spot = byId[entry.spotId] ?: return@mapNotNull null // deleted from the data: skip, don't crash
+            items = saved.map { (entry, spot) ->
                 SavedItem(spot.id, spot.name, spot.photo, Distance.labelOrNull(origin, spot.location), entry.savedAt)
             },
         )

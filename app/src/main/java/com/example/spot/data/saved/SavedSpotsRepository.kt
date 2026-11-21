@@ -1,6 +1,9 @@
 package com.example.spot.data.saved
 
+import com.example.spot.data.FoodSpotRepository
+import com.example.spot.data.model.FoodSpot
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
@@ -29,6 +32,16 @@ interface SavedSpotsRepository {
 
     suspend fun isSavedNow(spotId: String): Boolean
 }
+
+/**
+ * Saved entries joined with the spot data, newest first. Saved IDs that no longer exist in the data
+ * are skipped. Saved Places and the Profile "Favorites" count both use this, so their numbers match.
+ */
+fun SavedSpotsRepository.existingSavedSpots(foodSpots: FoodSpotRepository): Flow<List<Pair<SavedEntry, FoodSpot>>> =
+    combine(saved, foodSpots.observeSpots()) { entries, spots ->
+        val byId = spots.associateBy { it.id }
+        entries.mapNotNull { entry -> byId[entry.spotId]?.let { entry to it } }
+    }
 
 /** Newest first; ties (e.g. migrated IDs with equal times) by id so the order is stable. */
 internal fun Collection<SavedEntry>.newestFirst() =

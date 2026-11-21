@@ -29,9 +29,12 @@ import com.example.spot.data.model.FoodSpot
 import com.example.spot.di.AppGraph
 import com.example.spot.ui.explore.ExploreMapRoute
 import com.example.spot.ui.home.HomeRoute
+import com.example.spot.ui.profile.AboutRoute
+import com.example.spot.ui.profile.AppSettingsRoute
+import com.example.spot.ui.profile.HelpRoute
+import com.example.spot.ui.profile.ProfileRoute
 import com.example.spot.ui.saved.SavedRoute
 import com.example.spot.ui.search.SearchRoute
-import com.example.spot.ui.screens.PlaceholderScreen
 import com.example.spot.ui.screens.SubScreenPlaceholder
 import kotlinx.coroutines.launch
 
@@ -39,6 +42,9 @@ import kotlinx.coroutines.launch
 object SpotRoutes {
     const val ExploreMap = "explore-map"
     const val Details = "details/{id}"
+    const val AppSettings = "app-settings"
+    const val About = "about"
+    const val Help = "help"
     fun details(id: String) = "details/$id"
 
     /** Set on the Explore entry by Home's search field: focus the search field and open the keyboard. */
@@ -97,16 +103,20 @@ fun SpotNavHost(navController: NavHostController, modifier: Modifier = Modifier)
             }
         }
 
-        SpotDestination.entries.filter { it == SpotDestination.Profile }.forEach { destination ->
-            composable(destination.route) {
-                TabSurface {
-                    PlaceholderScreen(
-                        title = stringResource(destination.labelRes),
-                        note = stringResource(R.string.placeholder_note),
-                    )
-                }
+        // The Profile tab and its three sub-screens (no bottom bar on those).
+        composable(SpotDestination.Profile.route) {
+            TabSurface {
+                ProfileRoute(
+                    onOpenSaved = { navController.navigateToTab(SpotDestination.Saved) },
+                    onOpenSettings = { navController.navigate(SpotRoutes.AppSettings) { launchSingleTop = true } },
+                    onOpenAbout = { navController.navigate(SpotRoutes.About) { launchSingleTop = true } },
+                    onOpenHelp = { navController.navigate(SpotRoutes.Help) { launchSingleTop = true } },
+                )
             }
         }
+        composable(SpotRoutes.AppSettings) { TabSurface { AppSettingsRoute(onBack = { navController.popBackStack() }) } }
+        composable(SpotRoutes.About) { TabSurface { AboutRoute(onBack = { navController.popBackStack() }) } }
+        composable(SpotRoutes.Help) { TabSurface { HelpRoute(onBack = { navController.popBackStack() }) } }
 
         composable(SpotRoutes.ExploreMap) {
             TabSurface {

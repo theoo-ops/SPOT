@@ -7,7 +7,6 @@
     <string name="tab_profile">Profile</string>
     <string name="splash_tagline">Searching Places,\nOptions, and Tastes</string>
     <string name="splash_content_description">SPOT. Searching Places, Options, and Tastes</string>
-    <string name="placeholder_note">This screen is a placeholder. The real design comes in a later step.</string>
 
     <!-- Home -->
     <string name="greeting_morning">Good morning!</string>
@@ -55,6 +54,63 @@
         <item quantity="one">%d saved spot</item>
         <item quantity="other">%d saved spots</item>
     </plurals>
+
+    <!-- Profile (Profile tab) -->
+    <string name="profile_title">Profile</string>
+    <string name="profile_settings">App settings</string>
+    <string name="profile_edit">Edit profile</string>
+    <string name="profile_row_saved">My Saved Places</string>
+    <string name="profile_row_settings">App Settings</string>
+    <string name="profile_row_about">About SPOT</string>
+    <string name="profile_row_help">Help &amp; Support</string>
+    <plurals name="profile_stat_favorites">
+        <item quantity="one">Favorite</item>
+        <item quantity="other">Favorites</item>
+    </plurals>
+    <plurals name="profile_stat_favorites_spoken">
+        <item quantity="one">%d favorite</item>
+        <item quantity="other">%d favorites</item>
+    </plurals>
+    <string name="profile_sheet_title">Edit your name</string>
+    <string name="profile_sheet_body">This name stays on your phone. Leave it empty to show as Guest.</string>
+    <string name="profile_sheet_label">Name</string>
+    <string name="profile_sheet_counter">%1$d/%2$d</string>
+    <string name="profile_sheet_save">Save</string>
+    <string name="profile_sheet_cancel">Cancel</string>
+
+    <!-- App Settings -->
+    <string name="settings_title">App Settings</string>
+    <string name="settings_location_heading">Location</string>
+    <string name="settings_location_precise">Precise location on</string>
+    <string name="settings_location_precise_detail">SPOT shows how far each food spot is from you.</string>
+    <string name="settings_location_approximate">Approximate location on</string>
+    <string name="settings_location_approximate_detail">Distances are hidden because approximate location can be off by a kilometer. Turn on precise location to see them.</string>
+    <string name="settings_location_off">Location off</string>
+    <string name="settings_location_off_detail">SPOT can’t see where you are, so distances are hidden and the map starts at Golden Country Homes.</string>
+    <string name="settings_open_system">Open system settings</string>
+    <string name="settings_version">Version %1$s</string>
+
+    <!-- About -->
+    <string name="about_title">About SPOT</string>
+    <string name="about_tagline">Searching Places, Options, and Tastes</string>
+    <string name="about_body">SPOT helps you find, compare, and save food spots around Golden Country Homes and BatStateU Alangilan. Everything you save stays on your phone.</string>
+
+    <!-- Help & Support -->
+    <string name="help_title">Help &amp; Support</string>
+    <string name="help_q_save">How do I save a spot?</string>
+    <string name="help_a_save">Open a spot and tap the heart. It appears in the Saved tab, newest first. To remove it, tap the trash icon there, and tap Undo if you change your mind.</string>
+    <string name="help_q_distance">Why don’t I see distances?</string>
+    <string name="help_a_distance">SPOT shows distances only when it knows your precise location. If location is off or set to approximate, it hides them instead of showing wrong numbers. Check App Settings to turn on precise location.</string>
+    <string name="help_q_directions">How do directions work?</string>
+    <string name="help_a_directions">Tap Get Directions on a spot’s page. SPOT opens your maps app with the route from where you are. SPOT itself doesn’t give turn-by-turn directions.</string>
+    <string name="help_q_missing">Why is a spot missing?</string>
+    <string name="help_a_missing">SPOT lists spots around Golden Country Homes and BatStateU Alangilan. A spot may be new, closed, or outside the area. A category chip or a search can also hide it: tap All and clear the search. A saved spot that’s no longer listed drops off your Saved list.</string>
+    <string name="help_contact_body">Still stuck? Send us a message and we’ll get back to you.</string>
+    <string name="help_contact">Contact support</string>
+    <string name="help_email_subject">SPOT support (version %1$s)</string>
+    <string name="help_no_email_app">No email app found. Email us at %1$s.</string>
+    <string name="help_expanded">Expanded</string>
+    <string name="help_collapsed">Collapsed</string>
 
     <!-- Sub-screens -->
     <string name="details_placeholder_note">Spot details come in a later step.</string>

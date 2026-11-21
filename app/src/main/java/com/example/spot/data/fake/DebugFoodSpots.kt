@@ -11,6 +11,9 @@ import com.example.spot.location.SpotGeo
 object DebugData {
     const val Enabled = false
 
+    /** 30 characters with an emoji: the longest name the profile allows. */
+    const val ProfileName = "Marylein Orquinaza dela Cruz 🍜"
+
     fun spotsOr(normal: List<FoodSpot>): List<FoodSpot> = if (Enabled) WorstCaseSpots + manySpots(1_000) else normal
 
     /**
