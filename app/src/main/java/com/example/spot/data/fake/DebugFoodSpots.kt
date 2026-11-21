@@ -1,6 +1,7 @@
 package com.example.spot.data.fake
 
 import com.example.spot.data.model.FoodSpot
+import com.example.spot.data.saved.SavedEntry
 import com.example.spot.location.SpotGeo
 
 /**
@@ -11,6 +12,14 @@ object DebugData {
     const val Enabled = false
 
     fun spotsOr(normal: List<FoodSpot>): List<FoodSpot> = if (Enabled) WorstCaseSpots + manySpots(1_000) else normal
+
+    /**
+     * Saved spots for the debug data set: the worst cases (newest), a saved ID that no longer
+     * exists in the data (must be skipped), then 500 more.
+     */
+    fun savedEntries(now: Long = System.currentTimeMillis()): List<SavedEntry> =
+        (WorstCaseSpots.map { it.id } + "deleted-spot-404" + manySpots(500).map { it.id })
+            .mapIndexed { i, id -> SavedEntry(id, now - i * 60_000L) }
 }
 
 private fun spotNorthOfReference(

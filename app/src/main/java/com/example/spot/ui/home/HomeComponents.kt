@@ -302,7 +302,7 @@ internal fun SpotCard(spot: SpotItem, onClick: () -> Unit, modifier: Modifier = 
 
 /** Photo, or a tinted placeholder with the fork-and-knife icon when there is none. */
 @Composable
-private fun SpotPhoto(@DrawableRes photo: Int?, modifier: Modifier = Modifier) {
+internal fun SpotPhoto(@DrawableRes photo: Int?, modifier: Modifier = Modifier) {
     val shape = RoundedCornerShape(12.dp)
     if (photo != null) {
         Image(painterResource(photo), contentDescription = null, contentScale = ContentScale.Crop, modifier = modifier.clip(shape))

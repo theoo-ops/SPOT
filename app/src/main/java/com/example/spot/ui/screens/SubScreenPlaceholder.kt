@@ -3,6 +3,7 @@ package com.example.spot.ui.screens
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -24,7 +25,13 @@ import com.example.spot.R
 
 /** Placeholder for screens pushed on top of a tab (Search, Details): back arrow + title + note. */
 @Composable
-fun SubScreenPlaceholder(title: String, note: String, onBack: () -> Unit, modifier: Modifier = Modifier) {
+fun SubScreenPlaceholder(
+    title: String,
+    note: String,
+    onBack: () -> Unit,
+    modifier: Modifier = Modifier,
+    actions: @Composable RowScope.() -> Unit = {},
+) {
     Column(modifier.fillMaxSize()) {
         Row(
             modifier = Modifier.fillMaxWidth().padding(horizontal = 4.dp, vertical = 4.dp),
@@ -40,6 +47,7 @@ fun SubScreenPlaceholder(title: String, note: String, onBack: () -> Unit, modifi
                 overflow = TextOverflow.Ellipsis,
                 modifier = Modifier.weight(1f).semantics { heading() },
             )
+            actions()
         }
         Box(Modifier.fillMaxSize().padding(24.dp), contentAlignment = Alignment.Center) {
             Text(note, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)

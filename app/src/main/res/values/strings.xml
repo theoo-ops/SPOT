@@ -39,6 +39,23 @@
         <item quantity="other">%d results</item>
     </plurals>
 
+    <!-- Saved Places (Saved tab) -->
+    <string name="saved_title">Saved Places</string>
+    <string name="saved_loading">Loading your saved spots</string>
+    <string name="saved_save_more">Save more food spots for later!</string>
+    <string name="saved_empty_title">No saved spots yet</string>
+    <string name="saved_empty_body">Tap the heart on any spot to save it here.</string>
+    <string name="saved_empty_action">Explore food spots</string>
+    <string name="saved_removed">Removed from saved</string>
+    <string name="saved_undo">Undo</string>
+    <string name="saved_cd_remove">Remove %1$s from saved</string>
+    <string name="saved_cd_save">Save %1$s</string>
+    <string name="saved_cd_unsave">Remove %1$s from saved</string>
+    <plurals name="saved_count">
+        <item quantity="one">%d saved spot</item>
+        <item quantity="other">%d saved spots</item>
+    </plurals>
+
     <!-- Sub-screens -->
     <string name="details_placeholder_note">Spot details come in a later step.</string>
 

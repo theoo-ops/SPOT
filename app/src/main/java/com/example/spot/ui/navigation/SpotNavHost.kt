@@ -5,10 +5,17 @@ import androidx.compose.animation.ExitTransition
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.outlined.FavoriteBorder
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.produceState
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -22,9 +29,11 @@ import com.example.spot.data.model.FoodSpot
 import com.example.spot.di.AppGraph
 import com.example.spot.ui.explore.ExploreMapRoute
 import com.example.spot.ui.home.HomeRoute
+import com.example.spot.ui.saved.SavedRoute
 import com.example.spot.ui.search.SearchRoute
 import com.example.spot.ui.screens.PlaceholderScreen
 import com.example.spot.ui.screens.SubScreenPlaceholder
+import kotlinx.coroutines.launch
 
 /** Routes outside the bottom bar (the bar hides on these). */
 object SpotRoutes {
@@ -77,7 +86,18 @@ fun SpotNavHost(navController: NavHostController, modifier: Modifier = Modifier)
             }
         }
 
-        SpotDestination.entries.filter { it != SpotDestination.Home && it != SpotDestination.Explore }.forEach { destination ->
+        // The Saved tab is Saved Places.
+        composable(SpotDestination.Saved.route) {
+            TabSurface {
+                SavedRoute(
+                    onBack = { navController.navigateToTab(SpotDestination.Home) },
+                    onOpenDetails = { id -> navController.navigate(SpotRoutes.details(id)) { launchSingleTop = true } },
+                    onExplore = { navController.navigateToTab(SpotDestination.Explore) },
+                )
+            }
+        }
+
+        SpotDestination.entries.filter { it == SpotDestination.Profile }.forEach { destination ->
             composable(destination.route) {
                 TabSurface {
                     PlaceholderScreen(
@@ -105,11 +125,25 @@ fun SpotNavHost(navController: NavHostController, modifier: Modifier = Modifier)
             val spot by produceState<FoodSpot?>(initialValue = null, id) {
                 value = AppGraph.foodSpotRepository.getSpot(id)
             }
+            // Minimal heart until the real Details screen lands; it uses the same shared repository.
+            val savedFlow = remember(id) { AppGraph.savedSpotsRepository.isSaved(id) }
+            val saved by savedFlow.collectAsStateWithLifecycle(initialValue = false)
+            val scope = rememberCoroutineScope()
             TabSurface {
                 SubScreenPlaceholder(
                     title = spot?.name.orEmpty(),
                     note = stringResource(R.string.details_placeholder_note),
                     onBack = { navController.popBackStack() },
+                    actions = {
+                        val name = spot?.name.orEmpty()
+                        IconButton(onClick = { scope.launch { AppGraph.savedSpotsRepository.toggle(id) } }) {
+                            Icon(
+                                imageVector = if (saved) Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder,
+                                contentDescription = stringResource(if (saved) R.string.saved_cd_unsave else R.string.saved_cd_save, name),
+                                tint = MaterialTheme.colorScheme.primary,
+                            )
+                        }
+                    },
                 )
             }
         }
